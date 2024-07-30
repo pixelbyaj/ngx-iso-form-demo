@@ -15,11 +15,16 @@ export class IsoFormComponent implements OnInit {
     
   }
   ngOnInit(): void {
-    const jsonURL = `/iso20022/camt.053.001.10.json`;
-    this.httpClient.get(jsonURL).subscribe((data) => {
+    const jsonSchemaURL = `/iso20022/camt.053.001.10.json`;
+    this.httpClient.get(jsonSchemaURL).subscribe((data) => {
       this.schema = data as SchemaElement
-      this.form = new IsoForm(null);
     });
+    
+    const jsonModelURL = `/iso20022/model.json`;
+    this.httpClient.get(jsonModelURL).subscribe((data)=>{
+      this.form = new IsoForm(data);
+    });
+
   }
 
 }
