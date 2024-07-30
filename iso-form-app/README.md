@@ -1,27 +1,197 @@
-# IsoFormApp
+<div align="center">
+  <a href="https://https://github.com/pixelbyaj/ngx-iso-form">
+    <img src="https://raw.githubusercontent.com/pixelbyaj/ngx-form/main/anguar_logo.svg?sanitize=true" />
+  </a>
+  <br />
+  <h1>
+  XSD - JSON powered / Dynamic ISO 20022 forms in Angular v18
+  </h1>
+  
+  ![npm](https://img.shields.io/npm/v/ngx-iso-form)
+  ![NPM](https://img.shields.io/npm/l/ngx-iso-form)
+  [![Downloads](https://img.shields.io/npm/dt/ngx-iso-form.svg)](https://npmjs.org/package/ngx-iso-form)
+</div>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.2.
+---
+# NgxIsoForm
 
-## Development server
+This form is used to design Angular Reactive Form using any given JSON - XSD. The primary use of this UI library is to design ISO 20022 forms dynamically.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- 🔥 Automatic forms generation
+- 📝 Easy to extend with custom field types
+- ⚡️ Supports ISO 20022 schemas:
+    - XSD - JSON Schema using XSDService nuget
+    - Support all validation like required, pattern, minlength, maxlength
+    - Support translation labels, errors and date formats.
+- 💪 Built on top of [Angular Reactive Forms](https://angular.dev/guide/forms/reactive-forms)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## [Live Demo](https://www.pixelbyaj.com/ngx-iso-form/)
+## [StackBlitz Demo](https://stackblitz.com/edit/ngx-iso-form)
 
-## Build
+## **NOTE**
+**The library don't support direct execution of XSD and user need to convert XSD to JSON using [xsd-json-converter](https://www.npmjs.com/package/xsd-json-converter) npm package** 
+## How to consume
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Add angular material v18
+```console
+ng add @angular/material
+```
+### Install npm package ngx-iso-form.
 
-## Running unit tests
+```console
+npm i ngx-iso-form
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Import Module & SCSS
+```typescript 
+import { NgxIsoFormModule } from 'ngx-iso-form';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 
-## Running end-to-end tests
+@NgModule({
+  ...  
+  imports: [
+    ...
+    NgxIsoFormModule
+  ],
+  provider:[provideHttpClient()]
+  TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
+    ...
+})
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, '/i18n/', '.json');
+}
 
-## Further help
+```
+Add style file to angular.json file
+```json
+styles:[
+     "node_modules/ngx-iso-form/lib/styles/index.scss"
+]
+```
+### View
+```html
+<ngx-iso-form [schema]="schema" [form]="form"></ngx-iso-form>
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```
+### Component
+```typescript
+export class AppComponent implements OnInit {
+    form: IsoForm;
+    schema: SchemaElement;
+
+    this.httpClient.get(sample).subscribe((data) => {
+      this.schema = data as SchemaElement
+    });
+
+    this.httpClient.get(sampleLoad).subscribe((model) => {
+      this.form = new IsoForm(model)
+    });
+
+    //To get the form object please use
+    // this.form.getFormModel();
+}
+```
+### Supported JSON Schema
+```typescript
+export interface SchemaElement {
+    id: string;
+    name: string;
+    dataType: string;
+    minOccurs: string;
+    maxOccurs: string;
+    minLength: string;
+    maxLength: string;
+    pattern: string;
+    fractionDigits: string;
+    totalDigits: string;
+    minInclusive: string;
+    maxInclusive: string;
+    values: string[];
+    isCurrency: boolean;
+    xpath: string;
+    expanded:boolean;
+    elements: SchemaElement[];
+}
+
+```
+
+### Translation Support
+It support name and id properties of the SchemaElement
+Please declare all your translation rules under 'iso' object.
+```json
+{
+    "iso": {
+        "BkToCstmrStmt": {
+            "label": "Bank To Customer Statement"
+        },
+        "GrpHdr":{
+            "label": "Group Header"
+        },
+        "Document_BkToCstmrStmt_GrpHdr_CreDtTm": {
+            "label": "Create Datetime",
+            "general":{
+                "format":"YYYY-MM-DDThh:mm:ss.sss+/-"
+            },
+             "error": {
+                "required":"This field is required"
+             }
+        }
+    }
+}
+```
+
+# Convert XSD to JSON
+Global (For CLI)
+```console
+    npm install -g xsd-json-converter
+```
+Local (For SCRIPT)
+```console
+    npm install xsd-json-converter
+```
+
+### CLI
+```console
+xjc <source-path> <output-path>
+```
+
+#### Example
+##### Linux
+
+```console
+xjc /mnt/c/source/xsd/camt.053.001.10.xsd /mnt/c/source/xsd/camt.053.json 
+```
+
+##### Windows
+```console
+xjc C:/source/xsd/camt.053.001.10.xsd C:/source/xsd/camt.053.json 
+```
+### Script
+JavaScript
+```js
+const xsd = require('xsd-json-converter').default;
+
+xsd.convert('./camt.053.001.10.xsd')
+.then(output => console.log(output))
+  .catch(error => console.error(error));
+```
+
+TypeScript
+```ts
+import xsd from "xsd-json-converter";
+
+xsd.convert('./camt.053.001.10.xsd')
+.then(output => console.log(output))
+  .catch(error => console.error(error));
+```
+**NOTE**: For script please install the package locally
