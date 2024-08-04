@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { IsoFormComponent } from './iso-form/iso-form.component';
+import { IsoFormComponent } from './components/iso-form/iso-form.component';
 
 const routes: Routes = [
   { path: '**', component: IsoFormComponent }
