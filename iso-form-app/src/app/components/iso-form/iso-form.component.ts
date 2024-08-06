@@ -36,7 +36,7 @@ export class IsoFormComponent implements OnInit {
   selectedFile: File;
   validationMessage: string;
   isError:boolean;
-  private apiUrl: string = 'http://localhost:7142/api';
+  private apiUrl: string = 'https://www.pixelbyaj.com/api';
   private _injector = inject(Injector);
 
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
@@ -68,13 +68,13 @@ export class IsoFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.selectedFile == null) {
-      const jsonSchemaURL = `/iso20022/camt.053.001.10.json`;
+      const jsonSchemaURL = `https://pixelbyaj.com/iso20022/demo/iso20022/camt.053.001.10.json`;
       this.httpClient.get(jsonSchemaURL).subscribe((data: any) => {
         this.targetNamespace = data.namespace;
         this.schema = data.schemaElement as SchemaElement;
       });
 
-      const jsonModelURL = `/iso20022/model.json`;
+      const jsonModelURL = `https://pixelbyaj.com/iso20022/demo/iso20022/model.json`;
       this.httpClient.get(jsonModelURL).subscribe((data: any) => {
         this.form = new IsoForm(data);
       });

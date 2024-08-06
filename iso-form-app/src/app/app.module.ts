@@ -19,7 +19,7 @@ import { MatDividerModule } from '@angular/material/divider';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, '/i18n/', '.json');
+  return new TranslateHttpLoader(http, 'https://pixelbyaj.com/iso20022/demo/i18n/', '.json');
 }
 
 @NgModule({
