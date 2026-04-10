@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -32,6 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     MatStepperModule,
     MatButtonModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
